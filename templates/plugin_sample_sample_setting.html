@@ -8,7 +8,7 @@
   <nav>
     {{ macros.m_tab_head_start() }}
       {{ macros.m_tab_head2('normal', '일반', true) }}
-      {{ macros.m_tab_head2('register', '야이템등록', false) }}
+      {{ macros.m_tab_head2('register', '아이템등록', false) }}
     {{ macros.m_tab_head_end() }}
   </nav>
   <div class="tab-content" id="nav-tabContent">
@@ -28,10 +28,10 @@
    {{ macros.m_tab_content_start('register', false) }}
    <form id='item_register_form' name='item_register_form'>
     {{ macros.setting_input_text('sample_string', '문자열', value='', desc=['문자열 입력']) }}
-    {{ macros.setting_input_int('sample_integer', '숫자', value='', desc=['숫자 입력']) }}
+    {{ macros.setting_input_int('sample_integer', '숫자', value='0', desc=['숫자 입력']) }}
     {{ macros.setting_select('sample_boolean', '옵션', [['True', 'True'], ['False', 'False']], desc=['옵션선택']) }}
     {{ macros.setting_input_text('sample_imgurl', '이미지URL', value='', desc=['이미지URL']) }}
-    {{ macros.setting_button([['btn_register', '등록하기']], left='모델등록') }}
+    {{ macros.setting_button([['btn_register', '등록하기']], left='아이템등록') }}
    </form>
    {{ macros.m_tab_content_end() }}
 </div> <!--전체-->
