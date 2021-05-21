@@ -97,6 +97,7 @@ function request_search(page, scroll) {
       if (scroll == true) {
         window.scrollTo(0,0);
       }
+      current_data = data // current_data 에 매핑해줘야 global_json_btn 등 동작함
       make_list(data.list)
       make_page_html(data.paging)
     }
@@ -105,7 +106,6 @@ function request_search(page, scroll) {
 
 // 페이지 구성 함수
 function make_list(data) {
-  current_data = data;
   str = "";
   for (i in data) {
     str += m_row_start();
@@ -120,7 +120,9 @@ function make_list(data) {
     tmp += 'sample_integer: ' +data[i].sample_integer+'<br>';
     tmp += 'sample_boolean: ' +data[i].sample_boolean+'<br><br><br>';
 
-    btn_str = m_button('btn_modify', '수정하기', [{'key':'idx', 'value':i}]);
+    // global_json_btn: 버튼ID만 맞춰주면 모달창은 자동! - current_data 가 설정되어 있어야 함
+    btn_str = m_button('global_json_btn', 'JSON', [{'key':'id', 'value':data[i].id}]);
+    btn_str += m_button('btn_modify', '수정하기', [{'key':'idx', 'value':i}]);
     btn_str += m_button2('btn_delete', '삭제하기', [{'key':'id', 'value':data[i].id}], 'danger');
     tmp += m_button_group(btn_str);
 
@@ -134,7 +136,7 @@ function make_list(data) {
 $("body").on('click', '#btn_modify', function(e){
   e.preventDefault();
   var idx = $(this).data('idx');
-  var data = current_data[idx];
+  var data = current_data.list[idx];
   
   document.getElementById('item_id').value = data.id;
   document.getElementById('sample_string').value = data.sample_string;

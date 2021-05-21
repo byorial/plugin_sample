@@ -143,31 +143,7 @@ class LogicSample(LogicModuleBase):
             logger.debug('Exception:%s', e)
             logger.debug(traceback.format_exc())
 
-    """
-    @staticmethod
-    def one_execute():
-        try:
-            # 1회실행 버튼 클릭시 처리
-            if scheduler.is_include(package_name):
-                if scheduler.is_running(package_name):
-                    ret = 'is_running'
-                else:
-                    scheduler.execute_job(package_name)
-                    ret = 'scheduler'
-            else:
-                def func():
-                    time.sleep(2)
-                    self.scheduler_function()
-                t = threading.Thread(target=func, args=())
-                t.daemon = True
-                t.start()
-                ret = 'thread'
-        except Exception as e:
-            logger.error('Exception:%s', e)
-            logger.error(traceback.format_exc())
-            ret = 'fail'
-        return ret
-    """
+
     #########################################################
     # 필요함수 정의 및 구현부분
     @staticmethod
