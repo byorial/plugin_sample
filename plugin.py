@@ -21,6 +21,7 @@ class P(object):
     logger = get_logger(package_name)
     blueprint = Blueprint(package_name, package_name, url_prefix='/%s' %  package_name, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
+    # 메뉴 정의
     menu = {
         'main' : [package_name, u'플러그인샘플'],
         'sub' : [
@@ -47,7 +48,7 @@ class P(object):
     ModelSetting = get_model_setting(package_name, logger)
     logic = None
     module_list = None
-    home_module = 'sample'
+    home_module = 'sample'  # 기본모듈
 
 
 def initialize():
@@ -56,9 +57,10 @@ def initialize():
         from framework.util import Util
         Util.save_from_dict_to_json(P.plugin_info, os.path.join(os.path.dirname(__file__), 'info.json'))
 
+        # 로드할 모듈 정의
         from .sample import LogicSample
-
         P.module_list = [LogicSample(P)]
+
         P.logic = Logic(P)
         default_route(P)
 

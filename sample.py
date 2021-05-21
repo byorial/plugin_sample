@@ -43,20 +43,23 @@ class LogicSample(LogicModuleBase):
         super(LogicSample, self).__init__(P, 'setting') # 해당모듈의 기본 sub
         self.name = 'sample'    # 모듈명
 
+    # 플러그인 로딩시 실행할 내용이 있으면 작성
     def plugin_load(self):
         self.db_migration()
         self.initialize()
 
     def process_menu(self, sub, req):
+        # 각 메뉴들이 호출될때 필요한 값들을 arg에 넘겨주어야함
         arg = P.ModelSetting.to_dict()
         arg['sub'] = self.name
         P.logger.debug('sub:%s', sub)
-        if sub == 'setting':
+        if sub == 'setting':    # 설정페이지의 경우 스케쥴러 포함여부와 실행상태 전달
             job_id = '%s_%s' % (self.P.package_name, self.name)
             arg['scheduler'] = str(scheduler.is_include(job_id))
             arg['is_running'] = str(scheduler.is_running(job_id))
         return render_template('{package_name}_{module_name}_{sub}.html'.format(package_name=P.package_name, module_name=self.name, sub=sub), arg=arg)
 
+    # 각 페이지에서의 요청 처리
     def process_ajax(self, sub, req):
         try:
             ret = {'ret':'success', 'data':[]}
@@ -77,6 +80,7 @@ class LogicSample(LogicModuleBase):
             logger.error(traceback.format_exc())
             return jsonify({'ret':'exception', 'msg':str(e)})
 
+    # 스케쥴러에 의한 메인 로직 작동
     @staticmethod
     def scheduler_function():
         logger.debug('scheduler function!!!!!!!!!!!!!!')
@@ -90,6 +94,8 @@ class LogicSample(LogicModuleBase):
     @staticmethod
     def db_migration():
         try:
+            # db 마이그레이션: 필요한 경우에 작성 
+            # ex) 배포 후 버전업에 따라 DB에 필드의 추가가 필요하거나 할떄 사용 설정의 db_version을 업데이트 하며 사용
             pass
         except Exception as e:
             logger.debug('Exception:%s', e)
@@ -98,6 +104,7 @@ class LogicSample(LogicModuleBase):
     @staticmethod
     def initialize():
         try:
+            # 플러그인 로딩시 실행할 것들: Thread나 Queue 생성, 전역변수나 설정값들 초기화 등 처리
             pass
         except Exception as e: 
             P.logger.error('Exception:%s', e)
@@ -142,6 +149,7 @@ class LogicSample(LogicModuleBase):
     @staticmethod
     def one_execute():
         try:
+            # 1회실행 버튼 클릭시 처리
             if scheduler.is_include(package_name):
                 if scheduler.is_running(package_name):
                     ret = 'is_running'
@@ -162,6 +170,8 @@ class LogicSample(LogicModuleBase):
             ret = 'fail'
         return ret
 
+    #########################################################
+    # 필요함수 정의 및 구현부분
     @staticmethod
     def register_item(req):
         try:
@@ -214,6 +224,8 @@ class LogicSample(LogicModuleBase):
             return {'ret':'error', 'msg':str(e)}
 
 
+#########################################################
+# DB 모델 정의: @classmethod 사용
 class ModelSampleItem(db.Model):
     __tablename__ = '%s_item' % package_name
     __table_args__ = {'mysql_collate': 'utf8_general_ci'}
@@ -222,6 +234,7 @@ class ModelSampleItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_time = db.Column(db.DateTime)
     reserved = db.Column(db.JSON)
+    # 사용할 필드 정의
     sample_string = db.Column(db.String)
     sample_integer = db.Column(db.Integer)
     sample_boolean = db.Column(db.Boolean)
@@ -304,7 +317,7 @@ class ModelSampleItem(db.Model):
                 conditions = []
                 for tt in tmp:
                     if tt != '':
-                        conditions.append(cls.title.like('%'+tt.strip()+'%') )
+                        conditions.append(cls.sample_string.like('%'+tt.strip()+'%') )
                 query = query.filter(or_(*conditions))
             elif search.find(',') != -1:
                 tmp = search.split(',')
@@ -312,7 +325,7 @@ class ModelSampleItem(db.Model):
                     if tt != '':
                         query = query.filter(cls.sample_string.like('%'+tt.strip()+'%'))
             else:
-                query = query.filter(or_(cls.sample_string.like('%'+search+'%'), cls.sample_imgurl.like('%'+search+'%')))
+                query = query.filter(cls.sample_string.like('%'+search+'%'))
 
         if order == 'desc': query = query.order_by(desc(cls.id))
         else: query = query.order_by(cls.id)
