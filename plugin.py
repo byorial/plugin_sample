@@ -16,9 +16,6 @@ from framework.common.plugin import get_model_setting, Logic, default_route
 
 # 패키지
 #########################################################
-use_av = True
-use_setting = True
-
 class P(object):
     package_name = __name__.split('.')[0]
     logger = get_logger(package_name)
