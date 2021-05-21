@@ -81,8 +81,7 @@ class LogicSample(LogicModuleBase):
             return jsonify({'ret':'exception', 'msg':str(e)})
 
     # 스케쥴러에 의한 메인 로직 작동
-    @staticmethod
-    def scheduler_function():
+    def scheduler_function(self):
         logger.debug('scheduler function!!!!!!!!!!!!!!')
         if app.config['config']['use_celery']:
             result = LogicSample.task.apply_async()
@@ -91,8 +90,7 @@ class LogicSample(LogicModuleBase):
             LogicSample.task()
 
     #########################################################
-    @staticmethod
-    def db_migration():
+    def db_migration(self):
         try:
             # db 마이그레이션: 필요한 경우에 작성 
             # ex) 배포 후 버전업에 따라 DB에 필드의 추가가 필요하거나 할떄 사용 설정의 db_version을 업데이트 하며 사용
@@ -101,8 +99,7 @@ class LogicSample(LogicModuleBase):
             logger.debug('Exception:%s', e)
             logger.debug(traceback.format_exc())
 
-    @staticmethod
-    def initialize():
+    def initialize(self):
         try:
             # 플러그인 로딩시 실행할 것들: Thread나 Queue 생성, 전역변수나 설정값들 초기화 등 처리
             pass
@@ -111,7 +108,7 @@ class LogicSample(LogicModuleBase):
             P.logger.error(traceback.format_exc())
             return
 
-    @staticmethod
+    #@staticmethod
     @celery.task
     def task():
         try:
@@ -146,6 +143,7 @@ class LogicSample(LogicModuleBase):
             logger.debug('Exception:%s', e)
             logger.debug(traceback.format_exc())
 
+    """
     @staticmethod
     def one_execute():
         try:
@@ -159,7 +157,7 @@ class LogicSample(LogicModuleBase):
             else:
                 def func():
                     time.sleep(2)
-                    Logic.scheduler_function()
+                    self.scheduler_function()
                 t = threading.Thread(target=func, args=())
                 t.daemon = True
                 t.start()
@@ -169,7 +167,7 @@ class LogicSample(LogicModuleBase):
             logger.error(traceback.format_exc())
             ret = 'fail'
         return ret
-
+    """
     #########################################################
     # 필요함수 정의 및 구현부분
     @staticmethod
