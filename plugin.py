@@ -30,7 +30,7 @@ class P(object):
         'category' : 'tool',
         'sub2' : {
             'sample': [
-                ['setting',u'설정'],['list', u'목록'], ['uisample', u'UI샘플']
+                ['setting',u'설정'],['list', u'목록'], ['cardlist', u'카드목록'], ['uisample', u'UI샘플']
             ],
         },
     }
